@@ -1,27 +1,49 @@
 import Head from 'next/head'
 import MidiWriter from 'midi-writer-js';
 import styles from '@/styles/home.module.css'
+import { useState } from 'react';
 
 export default function Home() {
-  const track = new MidiWriter.Track();
 
-  // Define an instrument (optional):
-  track.addEvent(new MidiWriter.ProgramChangeEvent({instrument: 1}));
+  // set notes
+  const allNotes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A5', 'B5', 'C5']
+  const [activeNotes, setActiveNotes] = useState([])
 
-  // Add some notes:
-  const note = new MidiWriter.NoteEvent({pitch: ['C4', 'D4', 'E4'], duration: '4'});
-  track.addEvent(note);
-
-  // Generate a data URI
-  const write = new MidiWriter.Writer(track);
-  const downloadUri = write.dataUri()
-  function download(uri, name) {
+  function download() {
     var link = document.createElement("a");
-    link.download = name;
-    link.href = uri;
+    link.download = "melody.mid";
+
+    // make track
+    const track = new MidiWriter.Track();
+    track.addEvent(new MidiWriter.ProgramChangeEvent({instrument: 1}));
+    for (const noteName of activeNotes){
+      const note = new MidiWriter.NoteEvent({pitch: [noteName], duration: '1'});
+      track.addEvent(note);
+    }
+    const write = new MidiWriter.Writer(track);
+
+    link.href = write.dataUri();
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  }
+
+  function clickNote(note){
+    console.log(note)
+    if (activeNotes.includes(note)){
+      // remove note
+      setActiveNotes(
+        activeNotes.filter(a =>
+          a !== note
+        )
+      );
+    } else {
+      // add note
+      setActiveNotes([
+        ...activeNotes,
+        note
+      ]);
+    }
   }
   return (
     <>
@@ -33,7 +55,11 @@ export default function Home() {
       </Head>
       <main>
         <h1>Hello</h1>
-        <button onClick={() => (download(downloadUri, "hello.mid"))}>Download</button>
+        <p>{activeNotes}</p>
+        {allNotes.map((note, index) => (
+          <div key={index} className={styles.notebutton + (activeNotes.includes(note) ? ` ${styles[note.split("")[0]]}` : "")} onClick={() => clickNote(note)}/>
+        ))}
+        <br/><button onClick={download}>Download</button>
       </main>
     </>
   )
