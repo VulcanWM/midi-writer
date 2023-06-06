@@ -17,7 +17,7 @@ export default function Home() {
     // make track
     const track = new MidiWriter.Track();
     track.addEvent(new MidiWriter.ProgramChangeEvent({instrument: 1}));
-    
+
     const activeNotesDict = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: []}
     for (const note of activeNotes){
       let barNum = note.split(":")[0];
@@ -28,7 +28,7 @@ export default function Home() {
     }
 
     for (const barNumber of [1, 2, 3, 4, 5, 6, 7, 8]){
-      const note = new MidiWriter.NoteEvent({pitch: activeNotesDict[barNumber], duration: '1'});
+      const note = new MidiWriter.NoteEvent({pitch: activeNotesDict[barNumber], duration: '4'});
       track.addEvent(note);
     }
     const write = new MidiWriter.Writer(track);
@@ -65,7 +65,6 @@ export default function Home() {
       </Head>
       <main>
         <h1>Hello</h1>
-        <p>{activeNotes}</p>
         <div className={styles.grid}>
           {[1, 2, 3, 4, 5, 6, 7, 8].map((bar, index) => (
             <>
