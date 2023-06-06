@@ -6,7 +6,8 @@ import { useState } from 'react';
 export default function Home() {
 
   // set notes
-  const allNotes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A5', 'B5', 'C5']
+  // order from highest to lowest
+  const allNotes = ['C5', 'B4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4']
   const [activeNotes, setActiveNotes] = useState([])
 
   function download() {
@@ -16,8 +17,18 @@ export default function Home() {
     // make track
     const track = new MidiWriter.Track();
     track.addEvent(new MidiWriter.ProgramChangeEvent({instrument: 1}));
-    for (const noteName of activeNotes){
-      const note = new MidiWriter.NoteEvent({pitch: [noteName], duration: '1'});
+    
+    const activeNotesDict = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: []}
+    for (const note of activeNotes){
+      let barNum = note.split(":")[0];
+      let noteName = note.split(":")[1]
+      let barArray = activeNotesDict[barNum]
+      barArray.push(noteName)
+      activeNotesDict[barNum] = barArray
+    }
+
+    for (const barNumber of [1, 2, 3, 4, 5, 6, 7, 8]){
+      const note = new MidiWriter.NoteEvent({pitch: activeNotesDict[barNumber], duration: '1'});
       track.addEvent(note);
     }
     const write = new MidiWriter.Writer(track);
@@ -29,7 +40,6 @@ export default function Home() {
   }
 
   function clickNote(note){
-    console.log(note)
     if (activeNotes.includes(note)){
       // remove note
       setActiveNotes(
