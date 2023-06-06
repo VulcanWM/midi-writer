@@ -62,7 +62,7 @@ export default function Home() {
               <div className={styles.column}>
                 <p>{bar}</p>
                 {allNotes.map((note, index) => (
-                  <div key={index} className={styles.notebutton + (activeNotes.includes(note) ? ` ${styles[note.split("")[0]]}` : "")} onClick={() => clickNote(note)}/>
+                  <div key={index} className={styles.notebutton + (activeNotes.includes(bar + ":" + note) ? ` ${styles[note.split("")[0]]}` : "")} onClick={() => clickNote(bar + ":" + note)}/>
                 ))}
               </div>
             </>
