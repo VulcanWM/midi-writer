@@ -37,7 +37,7 @@ export default function Home() {
     for (const note of activeNotes){
       let barNum = note.split(":")[0];
       let noteName = note.split(":")[1]
-      let barArray = activeNotesDict[barNum]
+      let barArray = activeNotesDict[barNum] || []
       barArray.push(noteName)
       activeNotesDict[barNum] = barArray
     }
