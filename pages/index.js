@@ -2,9 +2,15 @@ import Head from 'next/head'
 import MidiWriter from 'midi-writer-js';
 import styles from '@/styles/home.module.css'
 import { useState } from 'react';
+import MidiPlayer from 'midi-player-js';
 
 export default function Home() {
-
+  const [activeBar, setActiveBar] = useState("0")
+  const Player = new MidiPlayer.Player(function(event) {
+    setActiveBar(event.tick/128+1)
+    console.log(event);
+  });
+  
   // set notes
   // order from highest to lowest
   const allNotes = ['C5', 'B4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4']
@@ -32,11 +38,34 @@ export default function Home() {
       track.addEvent(note);
     }
     const write = new MidiWriter.Writer(track);
-
     link.href = write.dataUri();
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  }
+
+  function play() {
+    // make track
+    const track = new MidiWriter.Track();
+    track.addEvent(new MidiWriter.ProgramChangeEvent({instrument: 1}));
+
+    const activeNotesDict = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: []}
+    for (const note of activeNotes){
+      let barNum = note.split(":")[0];
+      let noteName = note.split(":")[1]
+      let barArray = activeNotesDict[barNum]
+      barArray.push(noteName)
+      activeNotesDict[barNum] = barArray
+    }
+
+    for (const barNumber of [1, 2, 3, 4, 5, 6, 7, 8]){
+      const note = new MidiWriter.NoteEvent({pitch: activeNotesDict[barNumber], duration: '4'});
+      track.addEvent(note);
+    }
+    const write = new MidiWriter.Writer(track);
+    Player.loadDataUri(write.dataUri())
+    console.log(write.dataUri())
+    Player.play()
   }
 
   function clickNote(note){
@@ -68,7 +97,7 @@ export default function Home() {
         <div className={styles.grid}>
           {[1, 2, 3, 4, 5, 6, 7, 8].map((bar, index) => (
             <>
-              <div className={styles.column}>
+              <div className={styles.column + (activeBar == bar ? ` ${styles.activecolumn}`: "")}>
                 <p>{bar}</p>
                 {allNotes.map((note, index) => (
                   <div key={index} className={styles.notebutton + (activeNotes.includes(bar + ":" + note) ? ` ${styles[note.split("")[0]]}` : "")} onClick={() => clickNote(bar + ":" + note)}/>
@@ -77,6 +106,7 @@ export default function Home() {
             </>
           ))}
         </div>
+        <br/><button onClick={play}>Play</button>
         <br/><button onClick={download}>Download</button>
       </main>
     </>
