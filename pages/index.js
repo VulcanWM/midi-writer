@@ -9,8 +9,15 @@ export default function Home() {
   const Player = new MidiPlayer.Player(function(event) {
     // console.log(event);
   });
+  Player.on('fileLoaded', function() {
+    setActiveBar("1")
+  });
+
   Player.on('playing', function(currentTick) {
     setActiveBar(Math.round(currentTick.tick/128+1))
+  });
+  Player.on('endOfFile', function() {
+    setActiveBar("0")
   });
   
   // set notes
