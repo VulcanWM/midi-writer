@@ -7,8 +7,10 @@ import MidiPlayer from 'midi-player-js';
 export default function Home() {
   const [activeBar, setActiveBar] = useState("0")
   const Player = new MidiPlayer.Player(function(event) {
-    setActiveBar(event.tick/128+1)
-    console.log(event);
+    // console.log(event);
+  });
+  Player.on('playing', function(currentTick) {
+    setActiveBar(Math.round(currentTick.tick/128+1))
   });
   
   // set notes
@@ -24,7 +26,7 @@ export default function Home() {
     const track = new MidiWriter.Track();
     track.addEvent(new MidiWriter.ProgramChangeEvent({instrument: 1}));
 
-    const activeNotesDict = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: []}
+    const activeNotesDict = {}
     for (const note of activeNotes){
       let barNum = note.split(":")[0];
       let noteName = note.split(":")[1]
@@ -49,11 +51,11 @@ export default function Home() {
     const track = new MidiWriter.Track();
     track.addEvent(new MidiWriter.ProgramChangeEvent({instrument: 1}));
 
-    const activeNotesDict = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: []}
+    const activeNotesDict = {}
     for (const note of activeNotes){
       let barNum = note.split(":")[0];
       let noteName = note.split(":")[1]
-      let barArray = activeNotesDict[barNum]
+      let barArray = activeNotesDict[barNum] || []
       barArray.push(noteName)
       activeNotesDict[barNum] = barArray
     }
@@ -64,7 +66,6 @@ export default function Home() {
     }
     const write = new MidiWriter.Writer(track);
     Player.loadDataUri(write.dataUri())
-    console.log(write.dataUri())
     Player.play()
   }
 
