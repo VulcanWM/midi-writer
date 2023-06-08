@@ -101,22 +101,22 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <h1>Hello</h1>
+        <h1>MidiWriter</h1>
         <div className={styles.grid}>
-          {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((bar, index) => (
+          {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((bar, barIndex) => (
             <>
               {bar == 0 ? 
                 <div className={styles.column}>
                   <p>-</p>
                   {allNotes.map((note, index) => (
-                    <div className={styles.notename}>{note}</div>
+                    <div key={note} className={styles.notename}>{note}</div>
                   ))}
                 </div> 
               : 
                 <div className={styles.column + (activeBar == bar ? ` ${styles.activecolumn}`: "")}>
                   <p>{bar}</p>
                   {allNotes.map((note, index) => (
-                    <div key={index} className={styles.notebutton + (activeNotes.includes(bar + ":" + note) ? ` ${styles[note.split("")[0]]}` : "")} onClick={() => clickNote(bar + ":" + note)}/>
+                    <div key={bar + index} className={styles.notebutton + (activeNotes.includes(bar + ":" + note) ? ` ${styles[note.split("")[0]]}` : "")} onClick={() => clickNote(bar + ":" + note)}/>
                   ))}
                 </div>
                }
