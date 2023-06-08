@@ -17,6 +17,16 @@
   background-color: rgb(206, 204, 204);
 }
 
+.notename {
+  padding-left: 3vw;
+  padding-right: 3vw;
+  height: 8.25vh;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+
 .C {
   background-color: red;
 }
@@ -46,5 +56,5 @@
 }
 
 .activecolumn {
-  filter: brightness(1.5);
+  filter: brightness(1.35);
 }
