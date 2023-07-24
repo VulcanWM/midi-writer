@@ -7,7 +7,7 @@ import MidiPlayer from 'midi-player-js';
 export default function Home() {
   const [activeBar, setActiveBar] = useState("0")
   const Player = new MidiPlayer.Player(function(event) {
-    // console.log(event);
+    console.log(event);
   });
   Player.on('fileLoaded', function() {
     setActiveBar("1")
@@ -98,7 +98,7 @@ export default function Home() {
         <title>Midi Writer</title>
         <meta name="description" content="idk" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        {/* <link rel="icon" href="/favicon.ico" /> */}
       </Head>
       <main>
         <h1>MidiWriter</h1>
